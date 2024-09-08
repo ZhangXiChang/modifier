@@ -1,6 +1,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod sys_api;
+
 use anyhow::{anyhow, Result};
+use sys_api::ProcessInfo;
 use tauri::Manager;
 use window_shadows::set_shadow;
 
@@ -14,10 +17,15 @@ async fn main() -> Result<()> {
             Ok(())
         })
         .manage(System::default())
-        .invoke_handler(tauri::generate_handler![])
+        .invoke_handler(tauri::generate_handler![get_all_process_info])
         .run(tauri::generate_context!())?;
     Ok(())
 }
 
 #[derive(Default)]
 struct System {}
+
+#[tauri::command]
+fn get_all_process_info() -> Result<Vec<ProcessInfo>, String> {
+    sys_api::get_all_process_info().map_err(|err| err.to_string())
+}
