@@ -1,7 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod sys_api;
-
 use anyhow::{anyhow, Result};
 use tauri::Manager;
 use window_shadows::set_shadow;

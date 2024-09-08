@@ -1,9 +1,10 @@
+import { TauriEvent } from "@tauri-apps/api/event";
 import { appWindow } from "@tauri-apps/api/window";
 import { createSignal } from "solid-js";
 
-export default function MenuPanel() {
+export default function TitlePanel() {
     const [windowToggleMaximizeIcon, setwindowToggleMaximizeIcon] = createSignal("i-mdi:window-maximize w-16px h-16px");
-    appWindow.listen("tauri://resize", async () =>
+    appWindow.listen(TauriEvent.WINDOW_RESIZED, async () =>
         setwindowToggleMaximizeIcon(await appWindow.isMaximized() ?
             "i-mdi:window-restore w-16px h-16px" :
             "i-mdi:window-maximize w-16px h-16px",
