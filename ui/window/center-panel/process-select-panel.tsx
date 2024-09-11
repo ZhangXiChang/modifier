@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { createSignal, getOwner, runWithOwner } from "solid-js";
+import { setCenterControlPanel } from "./mod";
 
 export default function ProcessSelectPanel() {
     const owner = getOwner();
@@ -18,8 +19,13 @@ export default function ProcessSelectPanel() {
                         }
                         e.currentTarget.className = "bg-blue-3";
                     }}
-                    ondblclick={(e) => {
-                        e.currentTarget.parentElement?.remove();
+                    ondblclick={async () => {
+                        try {
+                            await invoke("test", { processId: info.process_id });
+                            runWithOwner(owner, () => setCenterControlPanel(<div>{info.process_id}</div>));
+                        } catch (err) {
+                            console.error(err);
+                        }
                     }}
                 >{info.exe_file_name}</div>,
             )));

@@ -33,30 +33,30 @@ pub fn get_all_process_info() -> Result<Vec<ProcessInfo>> {
     Ok(all_process_info_list)
 }
 
-// pub fn test(process_id: u32) -> Result<()> {
-//     unsafe {
-//         let process = OpenProcess(PROCESS_ALL_ACCESS, false, process_id)?;
-//         let mut modules_u81024buffer = [HMODULE::default(); 1024];
-//         let mut modules_u8buffer_size = 0;
-//         EnumProcessModules(
-//             process,
-//             modules_u81024buffer.as_mut_ptr(),
-//             size_of_val(&modules_u81024buffer) as u32,
-//             &mut modules_u8buffer_size,
-//         )?;
-//         let modules_buffer =
-//             &modules_u81024buffer[..modules_u8buffer_size as usize / size_of::<HMODULE>()];
-//         for module in modules_buffer {
-//             let mut module_name_u8maxpathbuffer = [0; MAX_PATH as usize];
-//             let module_name_u8buffer_size =
-//                 GetModuleBaseNameA(process, *module, &mut module_name_u8maxpathbuffer);
-//             if module_name_u8buffer_size > 0 {
-//                 let module_name = String::from_utf8(
-//                     module_name_u8maxpathbuffer[..module_name_u8buffer_size as usize].to_vec(),
-//                 )?;
-//                 println!("{}", module_name);
-//             }
-//         }
-//         Ok(())
-//     }
-// }
+pub fn test(process_id: u32) -> Result<()> {
+    unsafe {
+        let process = OpenProcess(PROCESS_ALL_ACCESS, false, process_id)?;
+        let mut modules_u81024buffer = [HMODULE::default(); 1024];
+        let mut modules_u8buffer_size = 0;
+        EnumProcessModules(
+            process,
+            modules_u81024buffer.as_mut_ptr(),
+            size_of_val(&modules_u81024buffer) as u32,
+            &mut modules_u8buffer_size,
+        )?;
+        let modules_buffer =
+            &modules_u81024buffer[..modules_u8buffer_size as usize / size_of::<HMODULE>()];
+        for module in modules_buffer {
+            let mut module_name_u8maxpathbuffer = [0; MAX_PATH as usize];
+            let module_name_u8buffer_size =
+                GetModuleBaseNameA(process, *module, &mut module_name_u8maxpathbuffer);
+            if module_name_u8buffer_size > 0 {
+                let module_name = String::from_utf8(
+                    module_name_u8maxpathbuffer[..module_name_u8buffer_size as usize].to_vec(),
+                )?;
+                println!("{}", module_name);
+            }
+        }
+    }
+    Ok(())
+}
