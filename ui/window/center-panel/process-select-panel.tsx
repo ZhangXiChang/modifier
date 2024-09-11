@@ -10,19 +10,24 @@ export default function ProcessSelectPanel() {
                 process_id: number,
                 exe_file_name: string,
             }[];
-            runWithOwner(owner, () => setProcessNames(all_process_info.map((info) => <tr><td>{info.exe_file_name}</td></tr>)));
+            runWithOwner(owner, () => setProcessNames(all_process_info.map((info) =>
+                <div
+                    onclick={(e) => {
+                        for (const child of e.currentTarget.parentElement?.children!) {
+                            child.className = "";
+                        }
+                        e.currentTarget.className = "bg-blue-3";
+                    }}
+                    ondblclick={(e) => {
+                        e.currentTarget.parentElement?.remove();
+                    }}
+                >{info.exe_file_name}</div>,
+            )));
         } catch (err) {
             console.error(err);
         }
     })();
-    return <div class="h-400px overflow-x-hidden overflow-y-auto">
-        <table>
-            <thead>
-                <tr><th scope="col">进程名称</th></tr>
-            </thead>
-            <tbody>
-                {processNames()}
-            </tbody>
-        </table>
+    return <div class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
+        {processNames()}
     </div>;
 }

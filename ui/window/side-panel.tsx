@@ -7,6 +7,5 @@ export default function SidePanel() {
                 <div class="i-line-md:github-loop h-48px w-48px" />
             </div>
         </div>
-        <div class="flex-1"></div>
     </div>;
 }
