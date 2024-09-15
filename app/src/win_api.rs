@@ -29,7 +29,7 @@ pub struct ProcessEntry {
     value: Rc<PROCESSENTRY32>,
 }
 impl ProcessEntry {
-    pub fn get_process_id(&self) -> u32 {
+    pub fn get_pid(&self) -> u32 {
         self.value.th32ProcessID
     }
     pub fn get_exe_file_name(&self) -> Result<String> {
@@ -42,7 +42,7 @@ impl ProcessEntry {
     pub fn open_process(&self) -> Result<Process> {
         Ok(Process {
             value: Pointer::new_mutex(unsafe {
-                OpenProcess(PROCESS_ALL_ACCESS, false, self.get_process_id())?
+                OpenProcess(PROCESS_ALL_ACCESS, false, self.get_pid())?
             }),
         })
     }

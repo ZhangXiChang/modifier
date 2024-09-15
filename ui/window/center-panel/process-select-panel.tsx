@@ -7,11 +7,11 @@ export default function ProcessSelectPanel() {
     const [processNames, setProcessNames] = createSignal(<></>);
     (async () => {
         try {
-            const all_process_info = await invoke("get_all_process_info") as {
-                process_id: number,
+            const system_process_info_list = await invoke("get_system_process_info_list") as {
+                pid: number,
                 exe_file_name: string,
             }[];
-            runWithOwner(owner, () => setProcessNames(all_process_info.map((info) =>
+            runWithOwner(owner, () => setProcessNames(system_process_info_list.map((process_info) =>
                 <div
                     onclick={(e) => {
                         for (const child of e.currentTarget.parentElement?.children!) {
@@ -21,13 +21,13 @@ export default function ProcessSelectPanel() {
                     }}
                     ondblclick={async () => {
                         try {
-                            await invoke("test", { processId: info.process_id });
-                            runWithOwner(owner, () => setCenterControlPanel(<div>{info.process_id}</div>));
+                            //await invoke("test", { processId: info.process_id });
+                            runWithOwner(owner, () => setCenterControlPanel(<div>{process_info.pid}</div>));
                         } catch (err) {
                             console.error(err);
                         }
                     }}
-                >{info.exe_file_name}</div>,
+                >{process_info.exe_file_name}</div>,
             )));
         } catch (err) {
             console.error(err);
