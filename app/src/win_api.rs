@@ -16,9 +16,14 @@ use windows::{
 use crate::lock::{MutexLock, Pointer};
 
 pub struct Process {
-    value: Rc<HANDLE>,
+    value: Pointer<Mutex<HANDLE>>,
 }
 impl Process {}
+impl Drop for Process {
+    fn drop(&mut self) {
+        let _ = unsafe { self.value.lock().free() };
+    }
+}
 
 pub struct ProcessEntry {
     value: Rc<PROCESSENTRY32>,
@@ -36,7 +41,7 @@ impl ProcessEntry {
     }
     pub fn open_process(&self) -> Result<Process> {
         Ok(Process {
-            value: Rc::new(unsafe {
+            value: Pointer::new_mutex(unsafe {
                 OpenProcess(PROCESS_ALL_ACCESS, false, self.get_process_id())?
             }),
         })
