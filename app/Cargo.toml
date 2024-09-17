@@ -4,13 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [build-dependencies]
-tauri-build = { version = "1.5.4", features = [] } #Tauri构建脚本
+tauri-build = { version = "1.5.5", features = [] } #Tauri构建脚本
 
 [features]
 custom-protocol = ["tauri/custom-protocol"] #在生产环境不要删除
 
 [dependencies]
-tauri = { version = "1.7.2", features = [
+tauri = { version = "1.8.0", features = [
     "window-minimize",
     "window-maximize",
     "window-close",
@@ -20,7 +20,7 @@ tauri = { version = "1.7.2", features = [
 ] } #Web窗口
 window-shadows = "0.2.2" #Tauri窗口阴影，在2.0之前仍然需要
 
-anyhow = "1.0.87"                                   #错误处理
+anyhow = "1.0.89"                                   #错误处理
 tokio = { version = "1.40.0", features = ["full"] } #异步运行时
 
 windows = { version = "0.58.0", features = [
@@ -30,4 +30,4 @@ windows = { version = "0.58.0", features = [
     "Win32_System_Diagnostics_Debug",
 ] }
 
-serde = { version = "1.0.209", features = ["derive"] } #编解码特性
+serde = { version = "1.0.210", features = ["derive"] } #编解码特性

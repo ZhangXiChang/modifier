@@ -21,8 +21,8 @@ export default function ProcessSelectPanel() {
                     }}
                     ondblclick={async () => {
                         try {
-                            //await invoke("test", { processId: info.process_id });
-                            runWithOwner(owner, () => setCenterControlPanel(<div>{process_info.pid}</div>));
+                            await invoke("open_process", { pid: process_info.pid });
+                            runWithOwner(owner, () => setCenterControlPanel(<></>));
                         } catch (err) {
                             console.error(err);
                         }
