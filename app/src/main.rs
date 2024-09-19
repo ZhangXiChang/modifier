@@ -35,7 +35,8 @@ async fn main() -> Result<()> {
         .manage(AppState::default())
         .invoke_handler(tauri::generate_handler![
             get_system_process_info_list,
-            open_process
+            open_process,
+            test
         ])
         .run(tauri::generate_context!())?;
     Ok(())
@@ -44,7 +45,7 @@ async fn main() -> Result<()> {
 #[tauri::command]
 fn get_system_process_info_list() -> Result<Vec<ProcessInfo>, String> {
     (|| {
-        let mut process_info_list = Vec::new();
+        let mut process_info_list = Vec::<ProcessInfo>::new();
         for process_entry in SystemSnapshot::new()?.process_entry_iter() {
             if process_entry.open_process().is_ok() {
                 process_info_list.push(ProcessInfo {
@@ -61,7 +62,20 @@ fn get_system_process_info_list() -> Result<Vec<ProcessInfo>, String> {
 #[tauri::command]
 fn open_process(app_state: tauri::State<AppState>, pid: u32) -> Result<(), String> {
     (|| {
-        *app_state.opened_process.lock() = Some(Process::new(pid)?);
+        *app_state.opened_process.lock()? = Some(Process::new(pid)?);
+        anyhow::Ok(())
+    })()
+    .map_err(|err| err.to_string())
+}
+
+#[tauri::command]
+fn test(app_state: tauri::State<AppState>) -> Result<(), String> {
+    (|| {
+        if let Some(opened_process) = &*app_state.opened_process.lock()? {
+            for memory_regions_info in opened_process.get_memory_region_info_list() {
+                opened_process.find_memory(memory_regions_info)?;
+            }
+        }
         anyhow::Ok(())
     })()
     .map_err(|err| err.to_string())

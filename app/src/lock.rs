@@ -1,31 +1,33 @@
 use std::sync::{Arc, Mutex, MutexGuard, RwLock, RwLockReadGuard, RwLockWriteGuard};
 
+use anyhow::{anyhow, Result};
+
 pub trait MutexLock<T> {
     fn new_mutex(value: T) -> Self;
-    fn lock(&self) -> MutexGuard<T>;
+    fn lock(&self) -> Result<MutexGuard<T>>;
 }
 impl<T> MutexLock<T> for Mutex<T> {
     fn new_mutex(value: T) -> Self {
         Self::new(value)
     }
-    fn lock(&self) -> MutexGuard<T> {
-        self.lock().unwrap()
+    fn lock(&self) -> Result<MutexGuard<T>> {
+        self.lock().map_err(|err| anyhow!("{}", err))
     }
 }
 pub trait ReadWriteLock<T> {
     fn new_rwlock(value: T) -> Self;
-    fn read(&self) -> RwLockReadGuard<T>;
-    fn write(&self) -> RwLockWriteGuard<T>;
+    fn read(&self) -> Result<RwLockReadGuard<T>>;
+    fn write(&self) -> Result<RwLockWriteGuard<T>>;
 }
 impl<T> ReadWriteLock<T> for RwLock<T> {
     fn new_rwlock(value: T) -> Self {
         Self::new(value)
     }
-    fn read(&self) -> RwLockReadGuard<T> {
-        self.read().unwrap()
+    fn read(&self) -> Result<RwLockReadGuard<T>> {
+        self.read().map_err(|err| anyhow!("{}", err))
     }
-    fn write(&self) -> RwLockWriteGuard<T> {
-        self.write().unwrap()
+    fn write(&self) -> Result<RwLockWriteGuard<T>> {
+        self.write().map_err(|err| anyhow!("{}", err))
     }
 }
 
@@ -42,7 +44,7 @@ where
             value: Arc::new(L::new_mutex(value)),
         }
     }
-    fn lock(&self) -> MutexGuard<T> {
+    fn lock(&self) -> Result<MutexGuard<T>> {
         self.value.lock()
     }
 }
@@ -55,10 +57,10 @@ where
             value: Arc::new(L::new_rwlock(value)),
         }
     }
-    fn read(&self) -> RwLockReadGuard<T> {
+    fn read(&self) -> Result<RwLockReadGuard<T>> {
         self.value.read()
     }
-    fn write(&self) -> RwLockWriteGuard<T> {
+    fn write(&self) -> Result<RwLockWriteGuard<T>> {
         self.value.write()
     }
 }

@@ -3,13 +3,13 @@ import { appWindow } from "@tauri-apps/api/window";
 import { createSignal } from "solid-js";
 
 export default function TitlePanel() {
-    const [windowToggleMaximizeIcon, setwindowToggleMaximizeIcon] = createSignal("i-mdi:window-maximize w-16px h-16px");
-    appWindow.listen(TauriEvent.WINDOW_RESIZED, async () =>
-        setwindowToggleMaximizeIcon(await appWindow.isMaximized() ?
+    const [window_toggle_maximize_icon, set_window_toggle_maximize_icon] = createSignal("i-mdi:window-maximize w-16px h-16px");
+    appWindow.listen(TauriEvent.WINDOW_RESIZED, async () => {
+        set_window_toggle_maximize_icon(await appWindow.isMaximized() ?
             "i-mdi:window-restore w-16px h-16px" :
             "i-mdi:window-maximize w-16px h-16px",
-        ),
-    );
+        );
+    });
     return <div data-tauri-drag-region class="h-32px flex items-center">
         <label class="h-24px w-80px flex justify-center font-bold" style={{ "text-shadow": "0px 0px 10px gray" }}>修改器</label>
         <div class="flex-1" />
@@ -20,7 +20,7 @@ export default function TitlePanel() {
         </div>
         <div data-tauri-drag-region class="w-32px flex justify-center">
             <div class="rounded hover:cursor-pointer hover:bg-gray-3" onclick={appWindow.toggleMaximize}>
-                <div class={windowToggleMaximizeIcon()} />
+                <div class={window_toggle_maximize_icon()} />
             </div>
         </div>
         <div data-tauri-drag-region class="w-32px flex justify-center">
